@@ -18,7 +18,7 @@ class TestCase{
       }
       failed++;
       ostringstream oss;
-      oss<<str<<": The arguments are not equal"<<endl;
+      oss<<str<<": Failure in test #"<<passed+failed<<": The arguments are not equal"<<endl;
       os.write(oss.str().c_str(), oss.str().size());
       return *this;
     }
@@ -29,7 +29,7 @@ class TestCase{
       }
       failed++;
       ostringstream oss;
-      oss<<str<<": The arguments are equal"<<endl;
+      oss<<str<<": Failure in test #"<<passed+failed<<": The arguments are equal"<<endl;
       os.write(oss.str().c_str(), oss.str().size());
       return *this;
     }
@@ -41,7 +41,7 @@ class TestCase{
       }
       failed++;
       ostringstream oss;
-      oss<<str<<": Function should return "<<b<<" but returned "<<c<<"!"<<endl;
+      oss<<str<<": Failure in test #"<<passed+failed<<": Function should return "<<b<<" but returned "<<c<<"!"<<endl;
       os.write(oss.str().c_str(), oss.str().size());
       return *this;
     }
@@ -53,7 +53,7 @@ class TestCase{
         return *this;
       }
       failed++;
-      oss<<str<<": output error"<<endl;
+      oss<<str<<": Failure in test #"<<passed+failed<<": output error"<<endl;
       os.write(oss.str().c_str(), oss.str().size());
       return *this;
     }
