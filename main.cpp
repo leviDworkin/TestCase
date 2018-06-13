@@ -32,10 +32,10 @@ int myround(double x) {
 struct MyStruct {
 	int num;
 	MyStruct(int num): num(num) {}
-	bool operator==(const MyStruct& other) {
+	bool operator==(const MyStruct& other) const {
 		return false; // a deliberate bug
 	}
-	bool operator!=(const MyStruct& other) {
+	bool operator!=(const MyStruct& other) const {
 		return num!=other.num; // no bug
 	}
 	int myNum() const {
@@ -49,6 +49,18 @@ int getNum(const MyStruct& s) {
 
 ostream& operator<< (ostream& out, const MyStruct& tc) {
 	return (out << "MyStrct"<<"("<<tc.num<<")"); // a deliberate typo (forgot "u").
+}
+
+struct OtherStruct {
+	int num;
+	OtherStruct(int num): num(num) {}
+	bool operator!=(const OtherStruct& other) const {
+		return false;    // a deliberate bug
+	}
+};
+
+ostream& operator<< (ostream& out, const OtherStruct& tc) {
+	return (out << "OtherStruct"<<"("<<tc.num<<")"); // No typo.
 }
 
 int main() {
@@ -69,6 +81,12 @@ int main() {
 		.check_function(getNum, MyStruct(5), 5)     // Here there is a bug.
 		.check_function([](const MyStruct& s){return s.myNum();}, MyStruct(5), 5) // Here there is a bug.
 		.print();
+
+	TestCase("Test OtherStruct operators", cerr)
+		.check_different(OtherStruct{5}, OtherStruct{6})                   // Here there is a bug.
+		.check_output(OtherStruct(5), "OtherStruct(5)")   // Here there is no bug.
+		.print();
+
 }
 
 /* Expected output:
@@ -81,5 +99,8 @@ int main() {
 	Test MyStruct operators: Failure in test #4: Function should return 5 but returned 6!
 	Test MyStruct operators: Failure in test #5: Function should return 5 but returned 7!
 	Test MyStruct operators: 4 failed, 1 passed, 5 total.
+	---
+	Test OtherStruct operators: Failure in test #1: OtherStruct(5) should differ than OtherStruct(6)!
+	Test OtherStruct operators: 1 failed, 1 passed, 2 total.
 	---
 */
